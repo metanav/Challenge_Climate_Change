@@ -7,10 +7,15 @@
 power_t hlw8032_read()
 {
     power_t p_data;
+    power_t prev_p_data;
 
     if (xQueueReceive(xQueue, &p_data, 0) != pdPASS) {
         dbg_str("hlw8032_read failed\r\n");
+	
+	return prev_p_data;
     }
+
+    prev_p_data = p_data;
 
     return p_data;
 }
@@ -59,12 +64,12 @@ void HLW8032DataTask(void *pvParameters)
                 sum += data[i];
 	    }
 	    // print data
-            dbg_ch('0');
-            dbg_ch('x');
-            dbg_hex8(data[i]);
-            dbg_ch(' ');
+            //dbg_ch('0');
+            //dbg_ch('x');
+            //dbg_hex8(data[i]);
+            //dbg_ch(' ');
 	}
-        dbg_nl();
+        //dbg_nl();
 
 	// the 24th byte (index=23) is checksum
 	

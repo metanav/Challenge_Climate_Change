@@ -1,5 +1,5 @@
-#ifndef __HLW8032_WIRE_H__
-#define __HLW8032_WIRE_H__
+#ifndef __HLW8032_FPGA_UART_H__
+#define __HLW8032_FPGA_UART_H__
 
 #include "queue.h"
 
@@ -18,4 +18,4 @@ power_t hlw8032_read();
 void HLW8032DataTask(void *pvParameters);
 power_t parse_data(uint8_t *data);
 
-#endif /* __HLW8032_WIRE_H__ */
+#endif /* __HLW8032_FPGA_UART_H__ */

@@ -20,6 +20,7 @@
 #include "ssi_comms.h"
 #include "micro_tick64.h"
 #include "hlw8032.h"
+#include "relay.h"
 
 extern void qf_hardwareSetup();
 static void nvic_init(void);
@@ -53,7 +54,9 @@ int main(void)
 
     dbg_str( "\n\nGetting data from Atom Socket!!\n\n");
 
-    xTaskCreate(HLW8032DataTask, "HLW8032Data", configMINIMAL_STACK_SIZE, NULL , 2, NULL );
+    xTaskCreate(HLW8032DataTask, "HLW8032Data", configMINIMAL_STACK_SIZE, NULL , 3, NULL );
+    xTaskCreate(RelaySwitchTask, "RelaySwitch", configMINIMAL_STACK_SIZE, NULL , 1, NULL );
+
     xTaskSet_uSecCount(1546300800ULL * 1000ULL * 1000ULL); // start at 2019-01-01 00:00:00 UTC time
 
     /* Start the tasks and timer running. */
