@@ -1,27 +1,25 @@
+#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include "eoss3_hal_uart.h"
 #include "dbg_uart.h"
 #include "hlw8032.h"
+#include "task.h"
 
 power_t hlw8032_read()
 {
     power_t p_data;
-    power_t prev_p_data;
 
     if (xQueueReceive(xQueue, &p_data, 0) != pdPASS) {
         dbg_str("hlw8032_read failed\r\n");
-	
-	return prev_p_data;
     }
-
-    prev_p_data = p_data;
 
     return p_data;
 }
 
 void HLW8032DataTask(void *pvParameters)
 {
+    dbg_str("HLW8032DataTask started\r\n");
     int  rx_avail = 0;
     uint8_t data[DATA_LEN];
 
@@ -33,7 +31,7 @@ void HLW8032DataTask(void *pvParameters)
 	// the data packet is being transmitted @ 4800 baud rate
 	// and there is 50ms pause after each data packet
 	// the delay value below is specific to the HLW8032 IC
-        vTaskDelay(45);
+        vTaskDelay(46);
 	
 	rx_avail = uart_rx_available(UART_ID_FPGA);
 
@@ -111,14 +109,26 @@ power_t parse_data(uint8_t *data)
     float current        = ((float)current_param / (float)current_data) * CF - 0.06f;
     float voltage        = ((float)volt_param / (float)volt_data) * VF;
     float apparent_power = current * voltage;
-    float true_power   = ((float)power_param / (float)power_data) * VF * CF;
+    float true_power     = ((float)power_param / (float)power_data) * VF * CF;
+
+    if ( current < 0.0f ) {
+	current = 0.0f;
+    }
 
     dbg_str_fraction("Current", current_param * CF - 0.06 * current_data, current_data);
     dbg_str_fraction("Voltage", volt_param * VF, volt_data);
-    dbg_str_fraction("Aparent Power", apparent_power * 1000, 1000);
+    dbg_str_fraction("Apparent Power", apparent_power * 1000, 1000);
     dbg_str_fraction("True Power", power_param  * VF * CF, power_data);
 
-    power_t p_data  =  {
+    //char values[50];
+    //sprintf(
+    //    values,
+    //    "AP=%0.2fVA, C=%0.4fA, TP=%0.2fW, V=%0.2fV\n",
+    //    apparent_power, current, true_power, voltage
+    //);
+    //dbg_str(values);
+
+    power_t p_data = {
 	.apparent_power = (int16_t) (apparent_power * 1000),
 	.current = (int16_t) (current * 1000), // mA
 	.true_power = (int16_t)  (true_power * 1000),

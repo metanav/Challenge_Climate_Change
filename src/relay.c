@@ -7,6 +7,7 @@
 
 void RelaySwitchTask(void *pvParameters)
 {
+    dbg_str("RelaySwitchTask started\r\n");
     bool state = false;
     bool prev_state = state;
     uint8_t ucVal;

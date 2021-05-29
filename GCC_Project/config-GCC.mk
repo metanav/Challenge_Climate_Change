@@ -69,7 +69,7 @@ export LD_FLAGS_1= -mcpu=cortex-m4 -mthumb -mlittle-endian -mfloat-abi=hard -mfp
             ${DASH_O} $(OPT_FLAGS) -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  \
             ${DASH_G} -T "$(PROJ_DIR)/quickfeather.ld" -Xlinker --gc-sections -Wall -Werror \
 	-Wl,--fatal-warnings -Wl,-Map,"$(OUTPUT_PATH)/$(OUTPUT_FILE).map" \
-            --specs=nano.specs --specs=nosys.specs -Wl,--no-wchar-size-warning \
+            --specs=nano.specs -u _printf_float --specs=nosys.specs -Wl,--no-wchar-size-warning \
             -o "$(OUTPUT_PATH)/$(OUTPUT_FILE).elf" -lm\
     -L$(LIBCMSIS_GCC_DIR) -larm_cortexM4lf_math 
 

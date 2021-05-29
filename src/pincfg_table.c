@@ -301,15 +301,13 @@ PadConfig pincfg_table[] =
 GPIOCfgTypeDef  gpiocfg_table[] =
 {
   {
-    //vm1010 dout setup as hardware interrupt pin on PAD_41 (sensor interrupt 6)  //Chandalar jumper J3.4
-    .usPadNum = PAD_41,
-    .ucGpioNum = GPIO_6,
-    .ucFunc = PAD41_FUNC_SEL_SENS_INT_6,
+    .usPadNum = PAD_24,
+    .ucGpioNum = GPIO_0,
+    .ucFunc = PAD24_FUNC_SEL_SENS_INT_1,
     .intr_type = EDGE_TRIGGERED,
     .pol_type = RISE_HIGH,
     .ucPull = PAD_PULLDOWN,
   },
-
 };
 
 int sizeof_pincfg_table = sizeof(pincfg_table)/sizeof(pincfg_table[0]);

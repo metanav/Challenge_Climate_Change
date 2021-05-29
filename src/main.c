@@ -54,7 +54,7 @@ int main(void)
 
     dbg_str( "\n\nGetting data from Atom Socket!!\n\n");
 
-    xTaskCreate(HLW8032DataTask, "HLW8032Data", configMINIMAL_STACK_SIZE, NULL , 3, NULL );
+    xTaskCreate(HLW8032DataTask, "HLW8032Data", configMINIMAL_STACK_SIZE, NULL , 2, NULL );
     xTaskCreate(RelaySwitchTask, "RelaySwitch", configMINIMAL_STACK_SIZE, NULL , 1, NULL );
 
     xTaskSet_uSecCount(1546300800ULL * 1000ULL * 1000ULL); // start at 2019-01-01 00:00:00 UTC time
@@ -75,6 +75,7 @@ static void nvic_init(void)
     NVIC_SetPriority(CfgDma_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(Uart_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
     NVIC_SetPriority(FbMsg_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
+    //NVIC_SetPriority(Gpio_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
  }    
 
 //needed for startup_EOSS3b.s asm file
