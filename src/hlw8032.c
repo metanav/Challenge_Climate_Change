@@ -12,6 +12,7 @@ power_t hlw8032_read()
 
     if (xQueueReceive(xQueue, &p_data, 0) != pdPASS) {
         dbg_str("hlw8032_read failed\r\n");
+	p_data.valid = false;
     }
 
     return p_data;
@@ -31,7 +32,7 @@ void HLW8032DataTask(void *pvParameters)
 	// the data packet is being transmitted @ 4800 baud rate
 	// and there is 50ms pause after each data packet
 	// the delay value below is specific to the HLW8032 IC
-        vTaskDelay(46);
+        vTaskDelay(48);
 	
 	rx_avail = uart_rx_available(UART_ID_FPGA);
 
@@ -65,14 +66,17 @@ void HLW8032DataTask(void *pvParameters)
             //dbg_ch('0');
             //dbg_ch('x');
             //dbg_hex8(data[i]);
-            //dbg_ch(' ');
+	    //if (i < DATA_LEN -1) {
+            //    dbg_ch(' '); 
+	    //} else {
+            //    dbg_nl();
+	    //}
 	}
-        //dbg_nl();
 
 	// the 24th byte (index=23) is checksum
 	
 	if (sum == data[DATA_LEN-1]) {
-	    dbg_str("Checksum [PASS]\r\n");
+	    //dbg_str("Checksum [PASS]\r\n");
 
 	    power_t p_data = parse_data(data);
 
@@ -112,7 +116,7 @@ power_t parse_data(uint8_t *data)
     float true_power     = ((float)power_param / (float)power_data) * VF * CF;
 
     if ( current < 0.0f ) {
-	current = 0.0f;
+      current = 0.0f;
     }
 
     dbg_str_fraction("Current", current_param * CF - 0.06 * current_data, current_data);
@@ -129,10 +133,11 @@ power_t parse_data(uint8_t *data)
     //dbg_str(values);
 
     power_t p_data = {
-	.apparent_power = (int16_t) (apparent_power * 1000),
+	.apparent_power = (int16_t) (apparent_power * 100),
 	.current = (int16_t) (current * 1000), // mA
-	.true_power = (int16_t)  (true_power * 1000),
+	.true_power = (int16_t)  (true_power * 100),
 	.voltage = (int16_t) (voltage * 10),
+	.valid = true
     };
 
     return p_data;

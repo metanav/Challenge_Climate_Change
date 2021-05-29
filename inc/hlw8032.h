@@ -1,6 +1,7 @@
 #ifndef __HLW8032_FPGA_UART_H__
 #define __HLW8032_FPGA_UART_H__
 
+#include <stdbool.h>
 #include "queue.h"
 
 #define DATA_LEN (24)
@@ -10,6 +11,7 @@ typedef struct power_t {
    int16_t current;
    int16_t true_power;
    int16_t voltage;
+   bool valid;
 } power_t;
 
 QueueHandle_t xQueue;

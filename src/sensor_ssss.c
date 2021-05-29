@@ -58,6 +58,8 @@ uint8_t sensor_rate_debug_gpio_val = 1;
 /* User modifiable sensor descriptor in JSON format */
 #if (SSI_SENSOR_SELECT_SSSS == 1)
 
+power_t prev_power_data;
+
 /* BEGIN JSON descriptor for the sensor configuration */
 
 const char json_string_sensor_config[] = \
@@ -117,6 +119,10 @@ int  sensor_ssss_acquisition_buffer_ready()
     /*--- BEGIN User modifiable section ---*/
     power_t power_data = hlw8032_read();  /* Read power data from HLW8032 */
 
+    if (power_data.valid == false) {
+	power_data = prev_power_data;
+    }
+
     /* Fill this HLW8032 data into the current data block */
     int16_t *p_power_data = (int16_t *)p_dest;
 
@@ -126,6 +132,8 @@ int  sensor_ssss_acquisition_buffer_ready()
     *p_power_data++ = power_data.voltage;
 
     p_dest += 8; // advance datablock pointer to retrieve and store next sensor data
+
+    prev_power_data = power_data;
 
     /* Read data from other sensors */
     int bytes_to_read = SENSOR_SSSS_CHANNELS_PER_SAMPLE * (SENSOR_SSSS_BIT_DEPTH/8) ;
