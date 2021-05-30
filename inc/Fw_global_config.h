@@ -35,9 +35,9 @@
 #define FEATURE_CLI_DEBUG_INTERFACE  1
 #define FEATURE_CLI_FILESYSTEM       0
 
-//#define S3AI_FIRMWARE_MODE_RECOGNITION   ('R')
-//#define S3AI_FIRMWARE_MODE_COLLECTION    ('C')
-//#define S3AI_FIRMWARE_MODE_none           0
+#define S3AI_FIRMWARE_MODE_RECOGNITION   ('R')
+#define S3AI_FIRMWARE_MODE_COLLECTION    ('C')
+#define S3AI_FIRMWARE_MODE_none           0
 
 /* Select the filesystem API to use */
 #define USE_FREERTOS_FAT         1  ///< Set this to 1 to use FreeRTOS FAT filesystem (Merced default)

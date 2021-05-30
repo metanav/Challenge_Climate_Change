@@ -18,6 +18,7 @@
 #include "top_bit.h"        // FPGA bitstream to load into FPGA
 #include "sensor_ssss.h"
 #include "ssi_comms.h"
+#include "kb.h"
 #include "micro_tick64.h"
 #include "hlw8032.h"
 #include "relay.h"
@@ -49,7 +50,14 @@ int main(void)
     // Initilize FPGA UART2x 
     init_fpga_uart();
 
-    sensor_ssss_block_processor();
+    #if (S3AI_FIRMWARE_IS_RECOGNITION == 1)
+        kb_model_init(); /* initialize the knowledgepack */
+    #endif
+    
+    #if (SSI_SENSOR_SELECT_SSSS == 1)
+        sensor_ssss_block_processor();
+    #endif
+
     StartSimpleStreamingInterfaceTask();
 
     dbg_str( "\n\nGetting data from Atom Socket!!\n\n");

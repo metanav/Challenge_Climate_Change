@@ -34,7 +34,7 @@
 #include "eoss3_hal_i2c.h"
 
 #include "hlw8032.h"
-//#include "sml_recognition_run.h"
+#include "sml_recognition_run.h"
 //#include "DataCollection.h"
 
 // When enabled, GPIO (configured in pincfg_table.c) is toggled whenever a
@@ -58,7 +58,13 @@ uint8_t sensor_rate_debug_gpio_val = 1;
 /* User modifiable sensor descriptor in JSON format */
 #if (SSI_SENSOR_SELECT_SSSS == 1)
 
-power_t prev_power_data;
+power_t prev_power_data = {
+	.apparent_power = 100,
+	.current = 1,
+	.true_power = 100,
+	.voltage = 1020,
+	.valid = true
+};
 
 /* BEGIN JSON descriptor for the sensor configuration */
 
@@ -67,9 +73,9 @@ const char json_string_sensor_config[] = \
    "\"sample_rate\":6,"\
    "\"samples_per_packet\":6,"\
    "\"column_location\":{"\
-	"  \"Apparent Power\":0,"
+	"  \"Apparent_Power\":0,"
 	"  \"Current\":1,"
-	"  \"True Power\":2,"
+	"  \"True_Power\":2,"
 	"  \"Voltage\":3"
    "}"\
 "}\r\n" ;
@@ -134,6 +140,7 @@ int  sensor_ssss_acquisition_buffer_ready()
     p_dest += 8; // advance datablock pointer to retrieve and store next sensor data
 
     prev_power_data = power_data;
+
 
     /* Read data from other sensors */
     int bytes_to_read = SENSOR_SSSS_CHANNELS_PER_SAMPLE * (SENSOR_SSSS_BIT_DEPTH/8) ;
@@ -508,38 +515,40 @@ void sensor_ssss_acquisition_read_callback(void)
 /* END SSSS Acquisition */
 
 /* SSSS AI processing element functions */
-//void sensor_ssss_ai_data_processor(
-//       QAI_DataBlock_t *pIn,
-//       QAI_DataBlock_t *pOut,
-//       QAI_DataBlock_t **pRet,
-//       datablk_pe_event_notifier_t *pevent_notifier
-//     )
-//{
-//    int16_t *p_data = (int16_t *) ( (uint8_t *)pIn + offsetof(QAI_DataBlock_t, p_data) );
-//
-//    // Invoke the SensiML recognition API
-//    int nSamples = pIn->dbHeader.numDataElements;
-//    int nChannels = pIn->dbHeader.numDataChannels;
-//    set_recognition_current_block_time();
-//    int batch_sz = nSamples / nChannels;
-//    int classification = sml_recognition_run_batch(p_data, batch_sz, nChannels, sensor_ssss_config.sensor_id);
-//    *pRet = NULL;
-//    return;
-//}
-//
-//void sensor_ssss_ai_config(void *pobj)
-//{
-//}
-//
-//int  sensor_ssss_ai_start(void)
-//{
-//  return 0;
-//}
-//
-//int  sensor_ssss_ai_stop(void)
-//{
-//  return 0;
-//}
+void sensor_ssss_ai_data_processor(
+       QAI_DataBlock_t *pIn,
+       QAI_DataBlock_t *pOut,
+       QAI_DataBlock_t **pRet,
+       datablk_pe_event_notifier_t *pevent_notifier
+     )
+{
+    int16_t *p_data = (int16_t *) ( (uint8_t *)pIn + offsetof(QAI_DataBlock_t, p_data) );
+
+    // Invoke the SensiML recognition API
+    int nSamples = pIn->dbHeader.numDataElements;
+    int nChannels = pIn->dbHeader.numDataChannels;
+    //set_recognition_current_block_time();
+    int batch_sz = nSamples / nChannels;
+    dbg_str("classification start\r\n");
+    int classification = sml_recognition_run_batch(p_data, batch_sz, nChannels, sensor_ssss_config.sensor_id);
+    dbg_str("classification done\r\n");
+    *pRet = NULL;
+    return;
+}
+
+void sensor_ssss_ai_config(void *pobj)
+{
+}
+
+int  sensor_ssss_ai_start(void)
+{
+  return 0;
+}
+
+int  sensor_ssss_ai_stop(void)
+{
+  return 0;
+}
 
 void sensor_ssss_event_notifier(int pid, int event_type, void *p_event_data, int num_data_bytes)
 {
