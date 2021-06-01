@@ -21,8 +21,8 @@
 /*######################## FIRMAWARE MODE SETTINGS  ################################*/
 
 
-#define S3AI_FIRMWARE_IS_COLLECTION  0		/* Enable sensor data collection       */
-#define S3AI_FIRMWARE_IS_RECOGNITION 1		/* Enable knowledgepack recognition    */
+#define S3AI_FIRMWARE_IS_COLLECTION  1		/* Enable sensor data collection       */
+#define S3AI_FIRMWARE_IS_RECOGNITION 0		/* Enable knowledgepack recognition    */
 
 
 /*######################## SENSOR CONFIGURATION SETTINGS  ################################*/

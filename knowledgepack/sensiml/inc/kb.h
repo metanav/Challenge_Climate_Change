@@ -45,7 +45,7 @@
 //Model Indexes to use for calls
 #define KB_MODEL_Pipeline_1_rank_4_INDEX 0
 
-#define MAX_VECTOR_SIZE 3
+#define MAX_VECTOR_SIZE 2
 
 //FILL_SENSIML_SENSOR_USAGES
 

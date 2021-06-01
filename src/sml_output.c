@@ -71,7 +71,7 @@ static void sml_output_serial(uint16_t model, uint16_t classification)
         buflen -= count;
 #endif
     
-    count = snprintf(&sensor_ssss_ai_result_buf[wbytes], buflen, "}\n");
+    count = snprintf(&sensor_ssss_ai_result_buf[wbytes], buflen, "}\r\n");
     wbytes += count;
     buflen -= count;
    

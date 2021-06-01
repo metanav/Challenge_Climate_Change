@@ -58,7 +58,9 @@ int main(void)
         sensor_ssss_block_processor();
     #endif
 
-    StartSimpleStreamingInterfaceTask();
+    #if ( ((SSI_SENSOR_SELECT_SSSS == 1) && (SENSOR_SSSS_LIVESTREAM_ENABLED == 1)) )
+        StartSimpleStreamingInterfaceTask();
+    #endif
 
     dbg_str( "\n\nGetting data from Atom Socket!!\n\n");
 
